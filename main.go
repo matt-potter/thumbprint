@@ -80,40 +80,41 @@ func main() {
 
 	state := conn.ConnectionState()
 
-	if len(state.PeerCertificates) > 0 {
-
-		thumbprint := sha1.Sum(state.PeerCertificates[len(state.PeerCertificates)-1].Raw)
-
-		formatted := fmt.Sprintf("%X", thumbprint)
-
-		if !*tf {
-			_, err = os.Stdout.WriteString(formatted)
-
-			if err != nil {
-				os.Exit(1)
-			}
-			os.Exit(0)
-		}
-
-		res := &output{
-			Thumbprint: formatted,
-		}
-
-		out, err := json.Marshal(res)
-
-		if err != nil {
-			os.Stderr.WriteString("internal error, unable to read certificate\n")
-			os.Exit(1)
-		}
-
-		_, err = os.Stdout.Write(out)
-
-		if err != nil {
-			os.Exit(1)
-		}
-
-		os.Exit(0)
-
+	if len(state.PeerCertificates) == 0 {
+		os.Stderr.WriteString("no certificates found\n")
+		os.Exit(1)
 	}
+
+	thumbprint := sha1.Sum(state.PeerCertificates[len(state.PeerCertificates)-1].Raw)
+
+	formatted := fmt.Sprintf("%X", thumbprint)
+
+	if !*tf {
+		_, err = os.Stdout.WriteString(formatted)
+
+		if err != nil {
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+
+	res := &output{
+		Thumbprint: formatted,
+	}
+
+	out, err := json.Marshal(res)
+
+	if err != nil {
+		os.Stderr.WriteString("internal error, unable to read certificate\n")
+		os.Exit(1)
+	}
+
+	_, err = os.Stdout.Write(out)
+
+	if err != nil {
+		os.Exit(1)
+	}
+
+	os.Exit(0)
 
 }
