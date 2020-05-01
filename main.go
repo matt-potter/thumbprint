@@ -15,7 +15,7 @@ type input struct {
 }
 
 type output struct {
-	Fingerprint string `json:"fingerprint"`
+	Thumbprint string `json:"thumbprint"`
 }
 
 var inBytes []byte
@@ -82,9 +82,9 @@ func main() {
 
 	if len(state.PeerCertificates) > 0 {
 
-		fingerprint := sha1.Sum(state.PeerCertificates[len(state.PeerCertificates)-1].Raw)
+		thumbprint := sha1.Sum(state.PeerCertificates[len(state.PeerCertificates)-1].Raw)
 
-		formatted := fmt.Sprintf("%X", fingerprint)
+		formatted := fmt.Sprintf("%X", thumbprint)
 
 		if !*tf {
 			_, err = os.Stdout.WriteString(formatted)
@@ -96,7 +96,7 @@ func main() {
 		}
 
 		res := &output{
-			Fingerprint: formatted,
+			Thumbprint: formatted,
 		}
 
 		out, err := json.Marshal(res)
